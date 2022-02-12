@@ -1,0 +1,42 @@
+# Use # for commenting
+
+# Naming my workflow, it's optional to name even in jobs and steps
+name: Execute simple Commands
+
+# on is the keyword to say on this particular event, example push event
+# For single event
+on: push
+
+# For multiple events, enclose in array with comma-separated
+# on: [push, fork]
+
+# All of the jobs you want to execute, theses jobs will execute parallely if they are independent jobs to execute.
+# Note: Can also add depends-on as a step in a job to be dependent on another job
+jobs:
+  # Name your job
+  execute-linux-commands:
+    # The Github hosted runner with the OS you want
+    runs-on: ubuntu-latest
+    # All of the steps you your actual commands which will complete your tasks
+    # In these steps, you will use pre-defined Github Actions or custom actions
+    steps: 
+      # - hyphen indicates the array of steps you want execute one after the other
+      # Naming my step
+      - name: List all files & Directories
+        # The command which you want to run in your terminal
+        run: ls
+      # The output of these steps and jobs can be found in the actions tab in your Github repository at the top.
+      - name: Echo a simple string
+        run: echo "Hello World!!"
+
+  # Just executing another job parallely with another OS
+  execute-windows-commands:
+    runs-on: windows-latest
+    steps:
+      # Some common software like Git, Node, npm, curl will be pre-installed.
+      - name: Check node.js version
+        # Execute multi-line commands
+        run: |
+          git --version
+          node -v
+          npm -v

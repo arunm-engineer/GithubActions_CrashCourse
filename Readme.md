@@ -44,7 +44,7 @@
 
 #### `.github > workflows > firstworkflow.yml`
 
-```
+```yml
 # Use # for commenting
 
 # Naming my workflow, it's optional to name even in jobs and steps

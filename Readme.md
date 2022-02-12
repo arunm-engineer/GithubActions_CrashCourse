@@ -90,4 +90,4 @@ jobs:
 ```
 
 #### Here in the Actions tab of your repository you can find the detailed output of your workflows, jobs, steps
-![Alt text](../../resources/workflow-output-check.png?raw=true "Optional Title")
+![Alt text](./resources/workflow-output-check.png?raw=true "Optional Title")

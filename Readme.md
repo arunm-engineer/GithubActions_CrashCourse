@@ -43,6 +43,7 @@
 #### Basically you want to excute an entire CI/CD workflow for your project. So you will mention your individual jobs to be carried out, example build, test. And in each of those jobs you want need to mention steps to execute a job, examples you will mention your build command as a step `npm run build`, for test your step `npm test -- --coverage`. `Note:` Actually, in a workflow these jobs would be running in runner let it be windows or linux. And any job can run in any runner type you wish.
 
 #### `.github > workflows > firstworkflow.yml`
+
 ```
 # Use # for commenting
 
@@ -87,3 +88,6 @@ jobs:
           node -v
           npm -v
 ```
+
+#### Here in the Actions tab of your repository you can find the detailed output of your workflows, jobs, steps
+<img src="../../resources/workflow-output-check.png"/>

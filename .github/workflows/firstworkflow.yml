@@ -1,4 +1,4 @@
-# Use # for commenting
+# Used # for commenting
 
 # Naming my workflow, it's optional to name even in jobs and steps
 name: Execute simple Commands

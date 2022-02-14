@@ -58,8 +58,9 @@ on: push
 # on: [push, fork]
 
 # All of the jobs you want to execute, theses jobs will execute parallely if they are independent jobs to execute.
-# Note: Can also add depends-on as a step in a job to be dependent on another job
+# Note: Can also add "needs" as a step in a job to be dependent on another job
 jobs:
+  # Can have more than one jobs running
   # Name your job
   execute-linux-commands:
     # The Github hosted runner with the OS you want
@@ -81,14 +82,76 @@ jobs:
     runs-on: windows-latest
     steps:
       # Some common software like Git, Node, npm, curl will be pre-installed.
-      - name: Check node.js version
+      - name: Check version
         # Execute multi-line commands
         run: |
           git --version
           node -v
           npm -v
-          
 ```
+
+#### Now try to make a git push in your repository which would cause push event and you would see all of your workflows being executed. Refer below image.
 
 #### Here in the Actions tab of your repository you can find the detailed output of your workflows, jobs, steps
 ![Alt text](./resources/workflow-output-check.png?raw=true "Optional Title")
+
+## Running steps in different shells in your wokflow
+
+```yml
+name: Execute simple Commands
+
+on: push
+
+jobs:
+  execute-linux-commands:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: List all files & Directories
+        run: ls
+      - name: Echo a simple string
+        run: echo "Hello World!!"
+        shell: bash
+
+  execute-windows-commands:
+    runs-on: windows-latest
+    steps:
+      - name: Check node.js version
+        run: |
+          node -v
+          npm -v
+        shell: pwsh # powershell
+      - name: Check Git version
+        run: git --version
+        shell: cmd # command prompt
+```
+## A Job dependent on one or more other jobs in a workflow
+
+#### By default all Jobs in a workflow runs parallely, so use "needs" for dependency of other jobs.
+
+```yml
+name: Execute simple Commands
+
+on: push
+
+jobs:
+  execute-linux-commands:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Echo a simple string
+        run: echo "Hello World!!"
+
+  execute-windows-commands:
+    runs-on: windows-latest
+    steps:
+      - name: Check node.js version
+        run: node -v
+  execute-mac-commands:
+    runs-on: macos-latest
+    # This "needs" shows an array of dependent job. i.e. Only after those jobs this job would execute.
+    needs: ["execute-linux-commands", "execute-windows-commands"]
+    steps:
+      - name: Listing directories and files
+        run: ls
+```
+
+### `Note` [Refer this link for different shells and different OS](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-a-specific-shell)

@@ -95,7 +95,7 @@ jobs:
 #### Here in the Actions tab of your repository you can find the detailed output of your workflows, jobs, steps
 ![Alt text](./resources/workflow-output-check.png?raw=true "Optional Title")
 
-## Running steps in different shells in your wokflow
+## Running steps in different shells in your wokflow for each steps
 
 ```yml
 name: Execute simple Commands
@@ -145,6 +145,7 @@ jobs:
     steps:
       - name: Check node.js version
         run: node -v
+
   execute-mac-commands:
     runs-on: macos-latest
     # This "needs" shows an array of dependent job. i.e. Only after those jobs this job would execute.
@@ -154,4 +155,4 @@ jobs:
         run: ls
 ```
 
-### `Note` [Refer this link for different shells and different OS](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-a-specific-shell)
+#### `Note` ![Refer this link for different shells and different OS](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-a-specific-shell)

@@ -219,5 +219,7 @@ jobs:
         run: |
           pwd 
           ls
-        # This time we can see the files and folders being present of our repository, since the entire codebase is pulled
 ```
+
+#### This time we can see the files and folders being present in our repository logged from the below image, since the entire codebase is pulled
+![Alt text](./resources/ref-4.png?raw=true "Optional Title")

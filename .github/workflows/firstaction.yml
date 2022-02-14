@@ -1,0 +1,23 @@
+name: Using First Action
+
+on: push
+
+jobs:
+  execute-hello-world-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simple Hello world action
+        id: hello_world # Giving unique identity to this step to refer in future
+        uses: actions/hello-world-javascript-action # "uses" defines which Action to be used
+        # Can assume an action to be a funtion, thereby the function can take input for the action
+        # "with" is used to pass the input for keyword "who-to-greet" already in the action
+        with: 
+          who-to-greet: Alexander
+      - name: Outputs of the action # Want to log the output being given by the function
+        run: |
+          echo "Hey this is your output from hello_world action",
+          echo "${{ steps.hello_world.outputs.time }}"
+        # So, above we have ${{}} which indicates for dynamic value assigned to output (just like JS template literal string).
+        # Here, to access output github has many objects pre-defined which can be used,
+        # "steps" an object which have all steps detail so to target "hello_world" step we used it, by giving "id" to identify, 
+        # then "outputs" is output from the referred step, then finally the variable "time" which is defined in action itself which contains the exact output

@@ -103,15 +103,6 @@ name: Execute simple Commands
 on: push
 
 jobs:
-  execute-linux-commands:
-    runs-on: ubuntu-latest
-    steps: 
-      - name: List all files & Directories
-        run: ls
-      - name: Echo a simple string
-        run: echo "Hello World!!"
-        shell: bash
-
   execute-windows-commands:
     runs-on: windows-latest
     steps:
@@ -123,6 +114,17 @@ jobs:
       - name: Check Git version
         run: git --version
         shell: cmd # command prompt
+
+  execute-linux-commands:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: List all files & Directories
+        run: ls
+      - name: Echo a simple string
+        run: echo "Hello World!!"
+        shell: bash # bash
+
+  
 ```
 ## A Job dependent on one or more other jobs in a workflow
 
@@ -155,4 +157,36 @@ jobs:
         run: ls
 ```
 
-#### `Note` ![Refer this link for different shells and different OS](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-a-specific-shell)
+#### `Note` [Refer this link for different shells and different OS](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-a-specific-shell)
+
+## Using first Action in our workflow from the Github Marketplace
+#### Here we will be using the `actions/hello-world-javascript-action`. This action which is already pre-defined just prints "Hello World" to your output. Note, we can also write our own customised actions like these since actions are written in JavaScript only by using some modules available by github.
+#### `actions/hello-world-javascript-action`, here actions is the global user by github in which we have all actions repository are published and "hello-world-javascript-action" is one among them.
+
+```yml
+name: Using First Action
+
+on: push
+
+jobs:
+  execute-hello-world-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simple Hello world action
+        id: hello_world # Giving unique identity to this step to refer in future
+        uses: actions/hello-world-javascript-action # "uses" defines which Action to be used
+        # Can assume an action to be a funtion, thereby the function can take input for the action
+        # "with" is used to pass the input for keyword "who-to-greet" already in the action
+        with: 
+          who-to-greet: Alexander
+      - name: Outputs of the action # Want to log the output being given by the function
+        run: |
+          echo "Hey this is your output from hello_world action",
+          echo "${{ steps.hello_world.outputs.time }}"
+        # So, above we have ${{}} which indicates for dynamic value assigned to output (just like JS template literal string).
+        # Here, to access output github has many objects pre-defined which can be used,
+        # "steps" an object which have all steps detail so to target "hello_world" step we used it, by giving "id" to identify, 
+        # then "outputs" is output from the referred step, then finally the variable "time" which is defined in action itself which contains the exact output
+```
+
+#### `Note` [ Refer this link to know more about this action](https://github.com/actions/hello-world-javascript-action)

@@ -174,7 +174,9 @@ jobs:
     steps:
       - name: Simple Hello world action
         id: hello_world # Giving unique identity to this step to refer in future
-        uses: actions/hello-world-javascript-action # "uses" defines which Action to be used
+         # "uses" defines which Action to be used
+        #  "v1" indicates the version release of the action repository, can also use latest commit id of the action instead of "v1"
+        uses: actions/hello-world-javascript-action@v1
         # Can assume an action to be a funtion, thereby the function can take input for the action
         # "with" is used to pass the input for keyword "who-to-greet" already in the action
         with: 

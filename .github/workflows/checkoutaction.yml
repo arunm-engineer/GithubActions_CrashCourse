@@ -1,0 +1,21 @@
+name: Checkout our code
+
+on: push
+
+jobs:
+  checkout-code-in-runner:
+    runs-on: ubuntu-latest
+    steps:
+        # To verify whether the runner actually contains the code files and folder or not
+      - name: Code check before Checkout Action
+        # This "pwd" will be the default working directory in which our code wil be placed
+        run: |
+          pwd 
+          ls
+      - name: Checkout code using Checkout Action
+        uses: actions/checkout@v1
+      - name: Code check after Checkout Action
+        run: |
+          pwd 
+          ls
+        # This time we can see the files and folders being present of our repository, since the entire codebase is pulled

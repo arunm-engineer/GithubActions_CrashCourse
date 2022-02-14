@@ -162,6 +162,7 @@ jobs:
 ## Using first Action in our workflow from the Github Marketplace
 #### Here we will be using the `actions/hello-world-javascript-action`. This action which is already pre-defined just prints "Hello World" to your output. Note, we can also write our own customised actions like these since actions are written in JavaScript only by using some modules available by github.
 #### `actions/hello-world-javascript-action`, here actions is the global user by github in which we have all actions repository are published and "hello-world-javascript-action" is one among them.
+#### `Note` [ Refer this link to know more about this action](https://github.com/actions/hello-world-javascript-action)
 
 ```yml
 name: Using First Action
@@ -191,7 +192,32 @@ jobs:
         # then "outputs" is output from the referred step, then finally the variable "time" which is defined in action itself which contains the exact output
 ```
 
-#### `Note` [ Refer this link to know more about this action](https://github.com/actions/hello-world-javascript-action)
-
 ![Alt text](./resources/ref-2.png?raw=true "Optional Title")
 ![Alt text](./resources/ref-3.png?raw=true "Optional Title")
+
+## Using one of the most important action `Checkout Action`
+#### When your workflow runs in the runner virtual machine it will not have the code files and folders of your repository. Let's say you want to build or test your code, for that you must have all your code files only then you can execute the build process. So checkout actions helps in pulling the code of your repository in that virtual machine and then you can follow any of the build or test or deploy process. This checkout action is officially created by Github itself.
+
+```yml
+name: Checkout our code
+
+on: push
+
+jobs:
+  checkout-code-in-runner:
+    runs-on: ubuntu-latest
+    steps:
+        # To verify whether the runner actually contains the code files and folder or not
+      - name: Code check before Checkout Action
+        # This "pwd" will be the default working directory in which our code wil be placed
+        run: |
+          pwd 
+          ls
+      - name: Checkout code using Checkout Action
+        uses: actions/checkout@v1
+      - name: Code check after Checkout Action
+        run: |
+          pwd 
+          ls
+        # This time we can see the files and folders being present of our repository, since the entire codebase is pulled
+```

@@ -93,7 +93,7 @@ jobs:
 #### Now try to make a git push in your repository which would cause push event and you would see all of your workflows being executed. Refer below image.
 
 #### Here in the Actions tab of your repository you can find the detailed output of your workflows, jobs, steps
-![Alt text](./resources/workflow-output-check.png?raw=true "Optional Title")
+![Alt text](./resources/ref-1.png?raw=true "Optional Title")
 
 ## Running steps in different shells in your wokflow for each steps
 
@@ -192,3 +192,6 @@ jobs:
 ```
 
 #### `Note` [ Refer this link to know more about this action](https://github.com/actions/hello-world-javascript-action)
+
+![Alt text](./resources/ref-2.png?raw=true "Optional Title")
+![Alt text](./resources/ref-3.png?raw=true "Optional Title")

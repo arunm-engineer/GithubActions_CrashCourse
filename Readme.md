@@ -300,3 +300,35 @@ jobs:
           echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
           echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
 ```
+
+#### [Refer more on Global or default environment variables from this link](https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables)
+#### Refer below image for the output of the above workflow
+
+![Alt text](./resources/ref-5.png?raw=true "Optional Title")
+![Alt text](./resources/ref-6.png?raw=true "Optional Title")
+
+## Pass Environment variables as encrypted Secrets across your workflows
+#### Now we would not want to expose our environment variables, so to encrypt and make it available (access) globally across all your workflows, jobs and steps follow below steps.
+#### Go to your repository in Settings tab and then Secrets in sidebar and click actions. Now add your repository secret with the key-value pair. That's it!!
+
+![Alt text](./resources/ref-7.png?raw=true "Optional Title")
+
+#### Now you can access the secret added in any of your workflow files
+
+```yml
+name: Secret Environment Variables in workflow
+
+on: push
+# Accessing your repo secret as an environment variable by not exposing your value
+env:
+  MY_WORKFLOW_ENV: ${{ secrets.MY_REPO_SECRET }}
+
+jobs:
+  execute-my-env:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Echo a simple string
+        id: Echoing
+        run: echo "MY_WORKFLOW_ENV: ${MY_WORKFLOW_ENV}"
+```
+

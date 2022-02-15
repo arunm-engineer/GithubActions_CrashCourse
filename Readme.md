@@ -337,7 +337,7 @@ jobs:
 ![Alt text](./resources/ref-8.png?raw=true "Optional Title")
 
 ## Using If conditionals in our workflows
-### So now we can use certain If conditionals in our workflow both "Jobs" level as well as at "Steps" level. Saying if so and so condition meets only then trigger the job or step.
+#### So now we can use certain If conditionals in our workflow both "Jobs" level as well as at "Steps" level. Saying if so and so condition meets only then trigger the job or step.
 
 ```yml
 name: Workflow - If conditionals
@@ -377,3 +377,77 @@ jobs:
 ```
 
 ![Alt text](./resources/ref-9.png?raw=true "Optional Title")
+
+# Project - React App Full CI/CD With Deployment on Heroku
+
+#### So let's create a Pipeline for our Simple ready-to-go React App for all the process and then finally deploy it over to heroku. First create your react app using the command `nps-create-react-app`. Create a repository over Github for your React App and link it. Now we will follow all of the process one-by-one in the job's steps of workflow.  First create this folder structure in your root directory of your project `.github > workflows > ci.yml`. And create your pipeline code in your ci.yml file.
+#### Now include all of the steps:
+#### 1. Checkout
+#### 2. Node.js Setup
+#### 3. Test
+#### 4. Build
+#### 5. Deploy
+
+#### We will have to use certain pre-defined actions from the Github Marketplace to complete our pipeline task easily and smoothly.
+#### 1. actions/checkout@v2 => To pull and checkout out our repository code in the runner
+#### 2. actions/setup-node@v1 => To setup the Node.js environment in the runner, so that we can Test, Build and Deploy
+#### 3. akhileshns/heroku-deploy@v3.12.12 => To ease our deployment process over Heroku
+
+
+```yml
+name: CI/CD for React App
+
+# Trigger workflow only when "push" event is triggered for "main" branch
+on:
+  push:
+    branches: [main]
+
+jobs:
+  workflow-react:
+    runs-on: ubuntu-latest
+    steps:
+        # First we have to checkout i.e. have code from our repository into the runner
+      - name: Checkout our code
+        uses: actions/checkout@v2
+        # Then we have to setup the node environment in the runner using Action from Marketplace
+      - name: Use custom node.js version
+        uses: actions/setup-node@v1
+        with:
+          # Passing parameter for specific Node.js version
+          node-version: "14.x"
+        # Installing dependencies using "npm ci" which is much preferred compared to "npm i" in CI/CD environments
+      - name: Install dependencies
+        run: npm ci
+        # To test React app use the command which triggers "test script" in your React app
+      - name: Run test
+        # This below test command will also help you generate test reports of your App
+        run: npm run test -- --coverage
+        # Also this is a "must" Environment Variable to be passed for this step
+        env:
+          CI: true
+        # Now "Build" process has to be performed only if the event triggered is "push" event
+      - name: Build project
+        if: github.event_name == 'push'
+        run: npm run build
+        # Similarly if "push" event then deploy React App to Heroku Platform
+      - name: Deploy project
+        if: github.event_name == 'push'
+        # To Deploy over Heroku we have using the below action from the Marketplace
+        uses: akhileshns/heroku-deploy@v3.12.12
+        # Also have to pass these credentials to authenticate and safely deploy
+        # We have passed these parameters using Github Secrets so that we don't expose it all over
+        # So go to setting tab, secrets tab and add secrets in your repository
+        with:
+          # Can find API key in User's Dashbpard
+          heroku_api_key: ${{ secrets.MY_HEROKU_API_KEY }}
+          # Now select "unique" App name to deploy over Heroku smoothly
+          heroku_app_name: ${{ secrets.MY_HEROKU_APP_NAME }}
+          # Pass your Heroku registered email
+          heroku_email: ${{ secrets.MY_HEROKU_EMAIL }}
+```
+
+#### Now here you can see detailed Successul reports for your CI/CD Pipeline.
+![Alt text](./resources/ref-10.png?raw=true "Optional Title")
+
+#### And here you have your Project being deployed over Heroku with the name for your Heroku app which you passed in your Github Secrets of your repository.
+![Alt text](./resources/ref-11.png?raw=true "Optional Title")

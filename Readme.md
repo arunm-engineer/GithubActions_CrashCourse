@@ -123,8 +123,6 @@ jobs:
       - name: Echo a simple string
         run: echo "Hello World!!"
         shell: bash # bash
-
-  
 ```
 ## A Job dependent on one or more other jobs in a workflow
 
@@ -223,3 +221,82 @@ jobs:
 
 #### This time we can see the files and folders being present in our repository logged from the below image, since the entire codebase is pulled
 ![Alt text](./resources/ref-4.png?raw=true "Optional Title")
+
+## Trigger workflows only event occurs on particular branch
+#### So let's say you have more number of branches associated with your project -> main, develop, bugfix and so on... Now I want to trigger the workflow only when the push event occurs in the particular "develop" branch and not for other branch events. So we need to describe these details in our workflow
+
+```yml
+name: Worflow for develop branch
+
+# Now these below line nowhere defines any additional details for the event
+# on: [push] 
+# on: push
+
+# Inorder to describe additional details we have to specify the events syntax in objects (key-value) pattern
+on:
+  push:
+    branches: 
+      - develop
+      - main 
+      # Want to trigger in "main" branch as well, then can put like this array of branches format
+  # To trigger workflow in PR for the "main" branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  execute-linux-commands:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Echo a simple string
+        run: echo "Hello World!!"
+```
+
+#### `Note` [For more additional details and parameters to consider refer this link](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push)
+
+## Using Environment Variables in our worlflow
+#### Different scopes of environment variables are available and can be used in our workflow.
+#### 1. Workflow scope (Available across workflow and can be used anywhere in jobs, steps)
+#### 2. Jobs scope (Available across the job and can be used in any steps of that workflow)
+#### 3. Steps scope (Available across the step and can be used in that step)
+#### 4. Global scope (These are globally available env's provided by Github itself which can be used anywhere in the workflow)
+
+```yml
+name: Environment Variables in workflow
+
+on: push
+# Env for the workflow scope - available for all jobs
+env:
+  MY_WORKFLOW_ENV: Env for workflow scope
+
+jobs:
+  execute-my-env:
+    runs-on: ubuntu-latest
+    env: 
+      MY_JOBS_ENV: Env only for "execute-my-env" - Job scope
+    steps: 
+      - name: Echo a simple string
+        id: Echoing
+        env:
+          MY_STEP_ENV: Env only for "echoing" step - Step scope
+        # Env can be accessed in same dynamic variable type
+        run: |
+          echo "MY_WORKFLOW_ENV: ${MY_WORKFLOW_ENV}"
+          echo "MY_JOBS_ENV: ${MY_JOBS_ENV}"
+          echo "MY_STEP_ENV: ${MY_STEP_ENV}"
+      - name: List files
+        run: ls
+  
+  execute-global-scope-env:
+    runs-on: ubuntu-latest
+    # Execute self-defined env variables along with global scope env available by github
+    run: |
+      echo "MY_WORKFLOW_ENV: ${MY_WORKFLOW_ENV}"
+      echo "MY_JOBS_ENV: ${MY_JOBS_ENV}"
+      echo "MY_STEP_ENV: ${MY_STEP_ENV}"
+
+      echo "HOME: ${HOME}"
+      echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+      echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
+      echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+```

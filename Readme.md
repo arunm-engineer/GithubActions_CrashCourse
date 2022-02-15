@@ -330,6 +330,7 @@ jobs:
       - name: Echo a simple string
         id: Echoing
         run: |
-          echo "MY_SECRET_ENV: ${MY_SECRET_ENV}"
+          echo "MY_SECRET_ENV: ${MY_SECRET_ENV}" > hello.txt
+          cat hello.txt
 ```
 

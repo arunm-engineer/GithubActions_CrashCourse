@@ -321,7 +321,7 @@ name: Secret Environment Variables in workflow
 on: push
 # Accessing your repo secret as an environment variable by not exposing your value
 env:
-  MY_WORKFLOW_ENV: ${{ secrets.MY_REPO_SECRET }}
+  MY_SECRET_ENV: ${{ secrets.MY_REPO_SECRET }}
 
 jobs:
   execute-my-env:
@@ -329,6 +329,7 @@ jobs:
     steps: 
       - name: Echo a simple string
         id: Echoing
-        run: echo "MY_WORKFLOW_ENV: ${MY_WORKFLOW_ENV}"
+        run: |
+          echo "MY_SECRET_ENV: "${MY_SECRET_ENV}"
 ```
 

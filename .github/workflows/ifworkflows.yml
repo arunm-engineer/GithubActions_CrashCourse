@@ -1,0 +1,34 @@
+name: Workflow - If conditionals
+
+on: push
+
+jobs:
+  execute-linux-commands:
+    runs-on: ubuntu-latest
+    # Checks if the event is "push" only then this job will execute
+    # If at Job level
+    if: github.event_name == 'push'
+    # When a step fails all other steps which have to be executed "will not" execute, since they trigger sequentially
+    # So lets handle just like Exceptional handling we do in Java
+    steps:
+      - name: Print Hello World
+        # Made a spelling mistake, so that this step fails as a result below steps will not execute
+        run: eccho "Hello World"
+      - name: Node.js version
+        # Since above step fails, but still I want to run this step
+        if: failure() # will give true if if above step fails, thereby this step will execute
+        run: node -v
+      - name: npm version
+        run: npm -v
+      - name: Git version
+        run: git --version
+        # Run this step always regardless of whatsoever happens in above steps - success or failure
+      - name: Print Working Directory
+        if: always()
+        run: pwd
+
+  execute-simple-commands:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: List all files & Directories
+        run: ls

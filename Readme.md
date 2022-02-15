@@ -184,11 +184,13 @@ jobs:
         run: |
           echo "Hey this is your output from hello_world action",
           echo "${{ steps.hello_world.outputs.time }}"
-        # So, above we have ${{}} which indicates for dynamic value assigned to output (just like JS template literal string).
+        # So, above we have ${{}} called "Expression context" which indicates for dynamic value assigned to output (just like JS template literal string).
         # Here, to access output github has many objects pre-defined which can be used,
         # "steps" an object which have all steps detail so to target "hello_world" step we used it, by giving "id" to identify, 
         # then "outputs" is output from the referred step, then finally the variable "time" which is defined in action itself which contains the exact output
 ```
+
+#### `Note` We also have other global objects just like "steps" which can be used in the workflow and those are "github", "job", "runner", "steps", etc...
 
 ![Alt text](./resources/ref-2.png?raw=true "Optional Title")
 ![Alt text](./resources/ref-3.png?raw=true "Optional Title")
@@ -333,4 +335,44 @@ jobs:
 
 #### Being a secret the value is not exposed and logged
 ![Alt text](./resources/ref-8.png?raw=true "Optional Title")
+
+## Using If conditionals in our workflows
+### So now we can use certain If conditionals in our workflow both "Jobs" level as well as at "Steps" level. Saying if so and so condition meets only then trigger the job or step.
+
+```yml
+name: Workflow - If conditionals
+
+on: push
+
+jobs:
+  execute-linux-commands:
+    runs-on: ubuntu-latest
+    # Checks if the event is "push" only then this job will execute
+    # If at Job level
+    if: github.event_name == 'push'
+    # When a step fails all other steps which have to be executed "will not" execute, since they trigger sequentially
+    # So lets handle just like Exceptional handling we do in Java
+    steps:
+      - name: Print Hello World
+        # Made a spelling mistake, so that this step fails as a result below steps will not execute
+        run: eccho "Hello World"
+      - name: Node.js version
+        # Since above step fails, but still I want to run this step
+        if: failure() # will give true if if above step fails, thereby this step will execute
+        run: node -v
+      - name: npm version
+        run: npm -v
+      - name: Git version
+        run: git --version
+        # Run this step always regardless of whatsoever happens in above steps - success or failure
+      - name: Print Working Directory
+        if: always()
+        run: pwd
+
+  execute-simple-commands:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: List all files & Directories
+        run: ls
+```
 

@@ -331,3 +331,6 @@ jobs:
         run: echo "Hello World!"
 ```
 
+#### Being a secret the value is not exposed and logged
+![Alt text](./resources/ref-8.png?raw=true "Optional Title")
+

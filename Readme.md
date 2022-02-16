@@ -380,7 +380,8 @@ jobs:
 
 # Project - React App Full CI/CD With Deployment on Heroku
 
-#### So let's create a Pipeline for our Simple ready-to-go React App for all the process and then finally deploy it over to heroku. First create your react app using the command `nps-create-react-app`. Create a repository over Github for your React App and link it. Now we will follow all of the process one-by-one in the job's steps of workflow.  First create this folder structure in your root directory of your project `.github > workflows > ci.yml`. And create your pipeline code in your ci.yml file.
+## Part 1 - Creating first simple CI/CD
+#### So let's create a Pipeline for our Simple ready-to-go React App for all the process and then finally deploy it over to heroku. First create your react app using the command `npx-create-react-app`. Create a repository over Github for your React App and link it. Now we will follow all of the process one-by-one in the job's steps of workflow.  First create this folder structure in your root directory of your project `.github > workflows > ci.yml`. And create your pipeline code in your ci.yml file.
 #### Now include all of the steps:
 #### 1. Checkout
 #### 2. Node.js Setup
@@ -451,3 +452,80 @@ jobs:
 
 #### And here you have your Project being deployed over Heroku with the name for your Heroku app which you passed in your Github Secrets of your repository.
 ![Alt text](./resources/ref-11.png?raw=true "Optional Title")
+
+## Part 2 - Involving Branches
+#### So, till now we only had one "main" branch into which we pushed our code and eventually our workflow was triggered and the processes of Test, Build and Deploy occured. But for best practice we don't make changes in "main" branch and push, instead create a different branch add your code changes (features, debug,..) and make a pull request into your main branch and then merge your code if everything works fine.
+#### So we will modify the workflow in this pattern, we will have two branches now "main" (which already exists) and create a new branch "develop" (add code changes in "develop" and make a Pull request in "main"). Follow below steps:
+#### Points to remember:
+#### 1. We want to create a "develop" branch to make code changes
+#### 2. Then we make a pull request in "main" branch, which would a trigger the workflow
+#### 3. Why trigger workflow? => Since we want to check if after our code changes made, only the "Test" Step in the workflow of our React App "passes" and only after that we can think of merging the code in "main" branch without any issues
+#### 4. Now after the pull request triggered workflow and passes all the "Test" Step, we will "merge" the code in our "main" branch. But we also want to trigger the workflow while "merging" the code checking all Steps => Build, Test and Deploy. Thereby, `our code with changes` after passes all steps will be deployed over Heroku.
+
+#### Steps to proceed:
+#### 1. So first create "develop" branch using `git checkout -b develop`. Then hit this command, so that your new "develop" branch is also tracked over remote Github `git push --set-upstream origin develop`
+#### 2. Now go back to "main" branch using `git checkout main`
+#### 3. In your workflow in ci.yml file add this event of "pull_request" in the "on" of your workflow for "main" branch so that we can trigger this workflow whenever there is a pull request made for "main" branch from any other branch (in this case from "develop" branch into the "main" branch). So your workflow after changes looks like this as below:
+```yml
+name: CI/CD for React App
+
+# Trigger workflow when "push" or "pull_request" event is triggered for "main" branch
+on:
+  push:
+    branches: [main]
+  # Below 2 lines are added
+  pull_request:
+    branches: [main]
+
+
+jobs:
+  workflow-react:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout our code
+        uses: actions/checkout@v2
+      - name: Use custom node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run test
+        run: npm run test -- --coverage
+        env:
+          CI: true
+      - name: Build project
+        if: github.event_name == 'push'
+        run: npm run build
+      - name: Deploy project
+        if: github.event_name == 'push'
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.MY_HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.MY_HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.MY_HEROKU_EMAIL }}
+```
+
+#### 4. Now add, commit and push in your "main" branch after making changes in your workflow using `git add . && git commit -m "Workflow change" && git push origin main`
+#### 5. Now, go back to "develop" branch using `git checkout develop` and make some changes in your code or debug or add features,.. Then again commit your changes for your "develop" branch using `git add . && git commit -m "Workflow change" && git push origin develop`
+#### 6. Now, go to your repository in Github and make a pull request from "develop" branch into your "main" branch and as a result your workflow will be triggered making only for the "Test" Step and not for Build or deploy. Why not for Build or Deploy, since we have already put a "if conditional" in our workflow if the event caused is a "push" event only then we must execute the Build and Deploy Steps. Check the steps and output from below images:
+
+![Alt text](./resources/ref-12.png?raw=true "Optional Title")
+![Alt text](./resources/ref-13.png?raw=true "Optional Title")
+
+#### 7. Below you can see that some checks have to to be passed before merging your code from "develop" branch into "main" branch. And these checks are nothing but your workflow steps which have been triggered by your pull request event i.e. once all of your workflow steps passes without any failure your checks here will be successful and the "Merge Pull Request" button which is disabled now because of checks will be enabled after successful checks are passed
+![Alt text](./resources/ref-14.png?raw=true "Optional Title")
+![Alt text](./resources/ref-15.png?raw=true "Optional Title")
+
+#### 8. Also you can notice only the Node setup and Test Steps and not Build and Deploy steps since we had "If" conditionals that run Build and Deploy only for "Push" event in the "main" branch
+![Alt text](./resources/ref-16.png?raw=true "Optional Title")
+
+#### 9. Since your steps of your worklow are passed your checks passes and the "Merge Pull Request" button is enabled to merge your code into "main" branch from your "develop" branch. SO just merge your pull request
+![Alt text](./resources/ref-17.png?raw=true "Optional Title")
+![Alt text](./resources/ref-18.png?raw=true "Optional Title")
+
+#### 10. Now you might have noticed from above image that stil your workflow is triggered eventhough you have nowhere mentioned the "merge" event in your Github. That's because when you make a "merge", Github by default makes a "push" event in your target branch ("main" branch over here) and thereby since your workflow has "push" event your workflow runs
+![Alt text](./resources/ref-19.png?raw=true "Optional Title")
+
+#### 11. Finally all of your steps have been executed successfully and deployed over Heroku with your code changes added!! You can verify your changes going to the App's link over the Heroku platform and find your code changes made.
+![Alt text](./resources/ref-19.png?raw=true "Optional Title")

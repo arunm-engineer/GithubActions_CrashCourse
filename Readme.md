@@ -376,6 +376,41 @@ jobs:
         run: ls
 ```
 
+## Using Strategy and Matrix in your workflow
+#### So, here if we want to run across multiple environments, let's say on Windows OS, Ubuntu OS, Mac OS,... and also want to test your project's code compatibility across all different versions on Node.js like 10, 12, 14 likewise.. So for this we would try to have different jobs for each environment OS, and then on each environment OS you will have all Node.js versions you want to test with. So here the combination count of individual environment increases. So for easier, to solve this purpose using strategy and matrix keys which are used in your workflow which will create your combination of environments and you can check your code's compatibility in workflow's execution.
+
+```yml
+name: Strategy and Matrix
+
+on: push
+
+jobs:
+  execute-across-environments:
+    # So first we will define strategy key by having the matrix (basically array which has values of the environment)
+    strategy:
+      matrix:
+        my_os: [ubuntu-latest, windows-latest, windows-latest]
+        my_node_version: [8, 10, 12, 14]
+        # In matrix key you just have key-value pair where "my_os" is just a custom defined variable which has array of values
+        # Array of values which it want to create the environment based on, basically these combination of these values will be replaced below
+        # And combination of environment will be formed
+
+    # Now, in this expression-context those combination of value will be palced mapping to the key mentioned below in matrix object
+    runs-on: ${{ matrix.my_os }}
+    steps:
+      - name: Print Node.js version
+        # This action below is used to setup Node.js in runners 
+        uses: actions/setup-node@v1
+        # Below accepts a parameter node_version which is dynamically replaced by combination of key-mapped values
+        with:
+          node_version: ${{ matrix.my_node_version }}
+        run: node -v
+```
+
+#### So like this you can create multiple combinations of customised environments easily. And from below image you can verify all of your combination of environments.
+
+
+
 ![Alt text](./resources/ref-9.png?raw=true "Optional Title")
 
 # Project - React App Full CI/CD With Deployment on Heroku

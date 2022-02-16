@@ -7,7 +7,7 @@ jobs:
     # So first we will define strategy key by having the matrix (basically array which has values of the environment)
     strategy:
       matrix:
-        my_os: [ubuntu-latest, windows-latest, windows-latest]
+        my_os: [ubuntu-latest, windows-latest, macos-latest]
         my_node_version: [8, 10, 12, 14]
         # In matrix key you just have key-value pair where "my_os" is just a custom defined variable which has array of values
         # Array of values which it want to create the environment based on, basically these combination of these values will be replaced below

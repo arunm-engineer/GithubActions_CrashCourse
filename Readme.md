@@ -408,8 +408,8 @@ jobs:
         run: node -v
 ```
 
-#### So like this you can create multiple combinations of customised environments easily. And from below image you can verify all of your combination of environments.
-
+#### So like this you can create multiple combinations of customised environments easily. And from below image you can verify all of your combination of jobs environments created and workflow executed for each individual job of environment.
+![Alt text](./resources/ref-21.png?raw=true "Optional Title")
 
 
 ![Alt text](./resources/ref-9.png?raw=true "Optional Title")

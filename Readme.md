@@ -528,4 +528,4 @@ jobs:
 ![Alt text](./resources/ref-19.png?raw=true "Optional Title")
 
 #### 11. Finally all of your steps have been executed successfully and deployed over Heroku with your code changes added!! You can verify your changes going to the App's link over the Heroku platform and find your code changes made.
-![Alt text](./resources/ref-19.png?raw=true "Optional Title")
+![Alt text](./resources/ref-20.png?raw=true "Optional Title")

@@ -376,6 +376,8 @@ jobs:
         run: ls
 ```
 
+![Alt text](./resources/ref-9.png?raw=true "Optional Title")
+
 ## Using Strategy and Matrix in your workflow
 #### So, here if we want to run across multiple environments, let's say on Windows OS, Ubuntu OS, Mac OS,... and also want to test your project's code compatibility across all different versions on Node.js like 10, 12, 14 likewise.. So for this we would try to have different jobs for each environment OS, and then on each environment OS you will have all Node.js versions you want to test with. So here the combination count of individual environment increases. So for easier, to solve this purpose using strategy and matrix keys which are used in your workflow which will create your combination of environments and you can check your code's compatibility in workflow's execution.
 
@@ -407,8 +409,6 @@ jobs:
       - name: Print Node.js version
         run: node -v
 ```
-
-![Alt text](./resources/ref-9.png?raw=true "Optional Title")
 
 #### So like this you can create multiple combinations of customised environments easily. And from below image you can verify all of your combination of jobs environments created and workflow executed for each individual job of environment.
 ![Alt text](./resources/ref-21.png?raw=true "Optional Title")

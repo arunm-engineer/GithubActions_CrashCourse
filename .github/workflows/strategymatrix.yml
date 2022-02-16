@@ -16,10 +16,11 @@ jobs:
     # Now, in this expression-context those combination of value will be palced mapping to the key mentioned below in matrix object
     runs-on: ${{ matrix.my_os }}
     steps:
-      - name: Print Node.js version
+      - name: Setup Node.js
         # This action below is used to setup Node.js in runners 
         uses: actions/setup-node@v1
         # Below accepts a parameter node_version which is dynamically replaced by combination of key-mapped values
         with:
           node_version: ${{ matrix.my_node_version }}
+      - name: Print Node.js version
         run: node -v

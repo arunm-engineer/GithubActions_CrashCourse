@@ -6,6 +6,68 @@
 #### 1. Basics of Git [Push, Commit, Pull-request, Merge, Branches]
 #### 2. YAML syntax
 
+## YAML Syntax
+#### YAML documents are basically a `collection of key-value pairs`. The value can be a simple string or can also be a collection further which has further more key-value pairs. In YAML `indentation` plays a major role to define structure of the YAML document. Tabs are not allowed and the amount of whitespace doesn't matter as long as the child node is more indented than the parent.
+
+#### Some of the datatypes we can have as values:
+#### 1. Strings
+#### 2. Number
+#### 3. Float
+#### 4. Boolean
+#### 5. Null
+#### 6. Complex Datatypes (dates and timestamps)
+
+```yml
+pepcoding:
+  # Strings can be with or without quotes
+  name: 'John'
+  department: Development
+  # For multiline strings
+  domains: |
+    JavaScript
+    Browser
+    React
+    Backend
+    Devops
+  age: 100
+  price: 100.00
+  Course-availablity: true
+  # We can represent "null" in either ways
+  null-value:
+  null-value: null
+```
+
+#### Lists or sequences of values => Array Like. We use hypens to represent these Lists of values.
+
+```yml
+count:
+  - one
+  - two
+  - three
+```
+
+#### Lists of objects (Nested form) 
+
+```yml
+nineteen-eighty-four:
+    author: George Orwell
+    published-at: 1949-06-08
+    page-count: 328
+    description: |
+        A Novel, often published as 1984, is a dystopian novel by English novelist George Orwell.
+    count:
+      - one
+      - two
+      - three
+
+the-hobbit:
+    author: J. R. R. Tolkien
+    published-at: 1937-09-21
+    page-count: 310
+    description: |
+        The Hobbit, or There and Back Again is a children's fantasy novel by English author J. R. R. Tolkien.
+```
+
 ## Flow in Github Actions
 ### Terminologies to know while working with github actions
 #### 1. Events
@@ -413,10 +475,10 @@ jobs:
 #### So like this you can create multiple combinations of customised environments easily. And from below image you can verify all of your combination of jobs environments created and workflow executed for each individual job of environment.
 ![Alt text](./resources/ref-21.png?raw=true "Optional Title")
 
-# Project - React App Full CI/CD With Deployment on Heroku
+# Project 1 - React App Full CI/CD With Deployment on Heroku
 
 ## Part 1 - Creating first simple CI/CD
-#### So let's create a Pipeline for our Simple ready-to-go React App for all the process and then finally deploy it over to heroku. First create your react app using the command `npx-create-react-app`. Create a repository over Github for your React App and link it. Now we will follow all of the process one-by-one in the job's steps of workflow.  First create this folder structure in your root directory of your project `.github > workflows > ci.yml`. And create your pipeline code in your ci.yml file.
+#### So let's create a Pipeline for our Simple ready-to-go React App for all the process and then finally deploy it over to heroku. First create your react app using the command `npx create-react-app <app-name>`. Create a repository over Github for your React App and link it. Now we will follow all of the process one-by-one in the job's steps of workflow.  First create this folder structure in your root directory of your project `.github > workflows > ci.yml`. And create your pipeline code in your ci.yml file.
 #### Now include all of the steps:
 #### 1. Checkout
 #### 2. Node.js Setup
@@ -564,3 +626,215 @@ jobs:
 
 #### 11. Finally all of your steps have been executed successfully and deployed over Heroku with your code changes added!! You can verify your changes going to the App's link over the Heroku platform and find your code changes made.
 ![Alt text](./resources/ref-20.png?raw=true "Optional Title")
+
+# Project 2 - CI/CD of Dockerized (Containerized) React App on Digital Ocean with self-hosted runner
+
+#### 1. In this project, we will first create a React App using `npx create-react-app <app-name>` and then containerize the React App using Docker.
+
+#### 2. To Dockerize your React App you will have to write a `Dockerfile` in your root directory of your project. So, create a file named `Dockerfile` and put the below content in that Dockerfile.
+
+```Dockerfile
+FROM node:alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "start"]
+```
+
+#### 3. Now we want to use a self-hosted runner. So, for that we will have to use our own server which will create on `Digitalocean`. And then connect that server on Digitalocean with our Github to link both. So for that we will have to run some cammands provided by Github itself to install an apllication to create a self-hosted runner on the server on Digitalocean.
+
+#### 4. First creating a droplet(server) on Digital ocean. Sign up on Digitalocean and follow below steps. Click on create and then Droplet.
+
+![Alt text](./resources/ref-30.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-23.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-24.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-25.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-26.png?raw=true "Optional Title")
+
+#### 5. Now, your droplet will be created. And you will find a number indicated by your below image `139.59.4.23`. You will find a different number for your server. Now that is your server's `ip-address` i.e. public ip address by which your server can be accessed over the internet.
+
+![Alt text](./resources/ref-32.png?raw=true "Optional Title")
+
+#### 6. First open command-prompt or powershell in your laptop. Then hit this below command. This below command will help you to connect to your server directly and you can work on that server from your machine itself. Then hit your password which you created for your server on Digitalocean.
+
+```Powershell
+ssh root@<your-ip-address>
+```
+
+![Alt text](./resources/ref-31.png?raw=true "Optional Title")
+
+#### 7. Now we will be connected to our server on Digitalocean and we have to run some basic commands mentioned below first on the server.
+
+```Powershell
+# Creating a user, why bcoz without a different user other than "root" we cannot link this server as a self-hosted runner. After this set your password for the user created and  you can skip those pop-up questions by just clicking "Enter" key
+sudo adduser <username>
+# Then giving "sudo" power to the user created
+sudo usermod -aG sudo <username>
+```
+
+#### 8. Then, after creating the user whenever you connect again to the server change to that new-user you created using below command.
+
+```Powershell
+sudo su - <username>
+```
+
+![Alt text](./resources/ref-38.png?raw=true "Optional Title")
+
+#### 9. Now we have to connect Github and this server to form this server as a self-hosted runner. So go to Github, your repository's settings and refer below images. After creating the self-hosted runner we have to run those commands on the Digitalocean's server to form this as self-hosted runner.
+
+![Alt text](./resources/ref-27.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-28.png?raw=true "Optional Title")
+
+#### 10. Now run those commands which is available for your on your Digitalocean's server. Refer below image.
+
+```Powershell
+mkdir actions-runner && cd actions-runner
+curl -o actions-runner-linux-x64-2.287.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.287.1/actions-runner-linux-x64-2.287.1.tar.gz
+echo "8fa64384d6fdb764797503cf9885e01273179079cf837bfc2b298b1a8fd01d52  actions-runner-linux-x64-2.287.1.tar.gz" | shasum -a 256 -c
+tar xzf ./actions-runner-linux-x64-2.287.1.tar.gz
+./config.sh --url https://github.com/arun496/react_ci_cd --token <your-token>
+./run.sh
+```
+
+![Alt text](./resources/ref-29.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-39.png?raw=true "Optional Title")
+
+#### 11. Now on Github you will find the name of your Digitalocean's server listed. Thereby your self-hosted runner is created. That's all about creating a self-hosted runner.
+
+![Alt text](./resources/ref-40.png?raw=true "Optional Title")
+
+#### 12. Now the actual part of creating the workflow i.e. the CI/CD pipeline for our Dockerized React App. So create this folder structure in the root directory of your project `.github > workflows > ci.yml`. And then put the below content in that ci.yml file which is our workflow.
+#### `Note` For secrets of your workflow, MY_DOCKERHUB_USERNAME and MY_DOCKERHUB_TOKEN create an account on DockerHub and where you will get your DockerHub's username and to generate DockerHub Token refer below images. DockerHub is the central repository to store all your Docker images, just like how Github stores your code's repository.
+
+![Alt text](./resources/ref-41.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-42.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-43.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-44.png?raw=true "Optional Title")
+
+```yml
+name: CI/CD of Container
+
+# Want to trigger workflow when "push" event occurs on "main" branch
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # First want to Build the docker Image for the App and then push the Image to the DockerHub
+  # DockerHub is container registry which holds "Docker Images", just like Github how it holds code repositories
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      # Since running on Github hosted runner, first we must checkout i.e. pull the code into the runner
+      - name: Checkout code
+        uses: actions/checkout@v2
+      # Now, we want to build image for our App and push image to Docker Hub
+      # But being Github hosted runner we may need to Login to Docker Hub first to get access to push Docker Image
+      - name: Login to Docker hub
+        # So, using an Action from Marketplace to login to Docker Hub
+        # Also make sure you have an account created on Docker Hub
+        uses: docker/login-action@v1
+        # We need to pass parameters for validation of Docker Hub User, these parameters can be retrieved from DockerHub Website, refer images provided
+        # Add these parameters in Github Secrets
+        with:
+          username: ${{ secrets.MY_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.MY_DOCKERHUB_TOKEN }}
+      # Now we can build the actual Docker Image of our React App
+      - name: Build container image
+        # First we need to get into the working directory where our code is present after checkout
+        # The we will build the Docker Image with the docker command below, which refers to a Dockerfile for instructions on how to build the Image
+        run: |
+            cd /home/runner/work/react_ci_cd/react_ci_cd/
+            docker build -t arun496/react-frontend -f Dockerfile .
+      # Now the Docker Image being built, we need to push the Docker Image to the Docker Hub using below "push" command
+      - name: Push image to Docker Hub
+        run: docker push arun496/react-frontend
+  # Now we will get into "our hosted server" on Digital Ocean
+  # Deploy our App by running the container for the Docker Image we built and pushed over Docker Hub
+  deploy:
+    # This time we will used the "self-hosted" runner which we configured and not Github Hosted runner
+    runs-on: self-hosted
+    # Before we start our "deploy" Job, we have a dependent Job to be completed first
+    # So this "deploy" job will only execute after "build_and_push" job is over pushing Docker Image. So "needs" below.
+    needs: build_and_push
+    steps:
+      # So our first move is to pull the Docker Image from Docker Hub into our DigitalOcean's self-hosted server to actually run a container
+      - name: Pull Docker image
+        run: docker pull arun496/react-frontend
+      # Now we can run the container for the Docker Image we pulled from Docker Hub
+      # That's it you can now go to your browser, enter  <your-server-ip>:<port> and you will see your React App running
+      # "your-server-ip" is the Public IP Address your can find in your DigitalOcean's Dashboard
+      # In this case "port" is 3000, so put <your-ip>:3000 in your browser and you will see your React App running
+      - name: Run React App container of pulled Docker image
+        run: docker run -p 3000:3000 arun496/react-frontend
+```
+
+![Alt text](./resources/ref-48.png?raw=true "Optional Title")
+
+![Alt text](./resources/ref-49.png?raw=true "Optional Title")
+
+#### 13. But the workflow which we created above is just about one time build  and then deploy. We cannot continuously change and integrate and deploy since already the old containers would be running on the server. So inorder to have continuous code changes and then integrate and deploy we first have to kill all existing containers and then run a new container with code changes already integrated in that image. So below we have the final workflow.
+
+```yml
+name: CI/CD of Container
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Login to Docker hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.MY_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.MY_DOCKERHUB_TOKEN }}
+      - name: Build container image
+        run: |
+            cd /home/runner/work/react_ci_cd/react_ci_cd/
+            docker build -t arun496/react-frontend -f Dockerfile .
+      - name: Push image to Docker Hub
+        run: docker push arun496/react-frontend
+  deploy:
+    runs-on: self-hosted
+    needs: build_and_push
+    steps:
+      # Now since this is a CI/CD Pipeline where we continuously develop and integrate
+      # So when deploying again with your new code changes you must first remove "all" your existing containers running or in stopped state
+      - name: Remove all Containers
+        run: docker rm $(docker ps -aq) -f
+      # So when deploying again with your new code changes you must first remove "all" your existing Docker Images pulled
+      - name: Remove all images
+        run: docker rmi $(docker images -q) -f
+      - name: Pull Docker image
+        run: docker pull arun496/react-frontend
+      - name: Run React App container of pulled Docker image
+        run: docker run -p 3000:3000 arun496/react-frontend
+```
+
+#### 14. Refer below images for your Github jobs successful output.
+
+![Alt text](./resources/ref-46.png?raw=true "Optional Title")
+
+#### 15. Finally go to your browser hit your server's ip-address from Digitalocean Dashboard and with port 3000 <your-ip:3000> and you will see your React App deployed and working in an Dockerized environment.
+
+![Alt text](./resources/ref-45.png?raw=true "Optional Title")

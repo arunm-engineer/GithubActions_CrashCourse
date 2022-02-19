@@ -788,7 +788,7 @@ jobs:
 
 ![Alt text](./resources/ref-49.png?raw=true "Optional Title")
 
-#### 13. But the workflow which we created above is just about one time build  and then deploy. We cannot continuously change and integrate and deploy since already the old containers would be running on the server. So inorder to have continuous code changes and then integrate and deploy we first have to kill all existing containers and then run a new container with code changes already integrated in that image. So below we have the final workflow.
+#### 13. But the workflow which we created above is just about one time build  and then deploy. We cannot continuously change and integrate and deploy since already the old containers would be running on the server. So inorder to have continuous code changes and then integrate and deploy we first have to kill all existing containers and then run a new container with code changes already integrated in that image. So below we have the final workflow. So we just need to add two steps in the "deploy" job of our workflow. And the rest remains the same.
 
 ```yml
 name: CI/CD of Container
